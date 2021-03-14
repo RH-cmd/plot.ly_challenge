@@ -113,7 +113,10 @@ function init() {
   buildMetadata(newSample);
   }
   
-  
-  
+  //this will handle the event change when we select a new ID
+function optionChanged(id) {
+    makePlots(id);
+    displayMetadata(id);
+}
   // Initialize the dashboard
   init();
