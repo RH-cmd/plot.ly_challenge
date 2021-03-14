@@ -1,5 +1,5 @@
 # Plot.ly Homework - Belly Button Biodiversity
-## [Deployed Github Page here]()
+## [Deployed Github Page here](https://rh-cmd.github.io/plot.ly_challenge/)
 
 ![Bacteria by filterforge.com](Images/bacteria.jpg)
 
