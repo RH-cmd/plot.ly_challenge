@@ -1,5 +1,5 @@
 function viewMetadata(sample) {
-    d3.json("data/samples.json").then((data) => {
+    d3.json("samples.json").then((data) => {
       var metadata = data.metadata;
       console.log(metadata);
 
@@ -26,24 +26,25 @@ function viewMetadata(sample) {
 
 // Create a function to build our bar and bubble charts
 
-  function buildCharts(sample) {
+function buildCharts(sample) {
     d3.json("samples.json").then((data) => {
     // Create variables for the elements we want from the dataset
-      var samples = data.samples;
-      var resultArray = samples.filter(object => object.id == sample);
-      var result = resultArray[0];
-      var otu_ids = result.otu_ids;
-      var otu_labels = result.otu_labels;
-      var sample_values = result.sample_values;
-  
-      // Create the bubble chart
-      var bubbleLayout = {
-        title: "Belly Button Biodiversity",
-        margin: { t: 0 },
-        hovermode: "closest",
-        xaxis: { title: "OTU ID" },
-        margin: { t: 30}
+     var samples = data.samples;
+     var resultArray = samples.filter(object => object.id == sample);
+     var result = resultArray[0];
+     var otu_ids = result.otu_ids;
+     var otu_labels = result.otu_labels;
+     var sample_values = result.sample_values;
+     
+     // Create the bubble chart
+     var bubbleLayout = {
+         title: "Belly Button Biodiversity",
+         margin: { t: 0 },
+         hovermode: "closest",
+         xaxis: { title: "OTU ID" },
+         margin: { t: 30}
       };
+      
       var bubbleData = [
         {
           x: otu_ids,
@@ -83,40 +84,34 @@ function viewMetadata(sample) {
 }
 
 
-//   Create the function for the form panel
-
+// Create the function for the form panel
 function init() {
-  // Select the dropdown element 
-  var selector = d3.select("#selDataset");
-  
-  // Populate the select options with the sample names
-  d3.json("samples.json").then((data) => {
-  // Create a varibles for the sample names
-    var sampleNames = data.names;
-    sampleNames.forEach((sample) => {
-      selector
-        .append("option")
-        .text(sample)
-        .property("value", sample);
+    // Select the dropdown element 
+    var selector = d3.select("#selDataset");
+    
+    // Populate the select options with the sample names
+    d3.json("samples.json").then((data) => {
+        // Create a varibles for the sample names
+        var sampleNames = data.names;
+        sampleNames.forEach((sample) => {
+            selector
+            .append("option")
+            .text(sample)
+            .property("value", sample);
     });
   
     // Build the intial plot
     const firstSample = sampleNames[0];
     buildCharts(firstSample);
-    buildMetadata(firstSample);
+    viewMetadata(firstSample);
   });
   }
   
-  function optionChanged(newSample) {
-  // Switch the data when we select a new sample
+// Switch the data when we select a new sample
+function optionChanged(newSample) {
   buildCharts(newSample);
-  buildMetadata(newSample);
-  }
-  
-  //this will handle the event change when we select a new ID
-function optionChanged(id) {
-    makePlots(id);
-    displayMetadata(id);
+  viewMetadata(newSample);
 }
-  // Initialize the dashboard
-  init();
+
+// Initialize the dashboard
+init();
