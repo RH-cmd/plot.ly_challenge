@@ -60,4 +60,44 @@ function viewMetadata(sample) {
   
       Plotly.newPlot("bubble", bubbleData, bubbleLayout);
 
-   
+    //   Create the bar chart
+  
+    var yticks = otu_ids.slice(0, 10).map(otuID => `OTU ${otuID}`).reverse();
+    var barData = [
+      {
+        y: yticks,
+        x: sample_values.slice(0, 10).reverse(),
+        text: otu_labels.slice(0, 10).reverse(),
+        type: "bar",
+        orientation: "h",
+      }
+    ];
+
+    var barLayout = {
+      title: "Top 10 OTUs Found",
+      margin: { t: 30, l: 150 }
+    };
+
+    Plotly.newPlot("bar", barData, barLayout);
+  });
+}
+
+
+//   Create the function for the form panel
+
+function init() {
+  // Select the dropdown element 
+  var selector = d3.select("#selDataset");
+  
+  // Populate the select options with the sample names
+  d3.json("samples.json").then((data) => {
+  // Create a varibles for the sample names
+    var sampleNames = data.names;
+    sampleNames.forEach((sample) => {
+      selector
+        .append("option")
+        .text(sample)
+        .property("value", sample);
+    });
+  
+    
