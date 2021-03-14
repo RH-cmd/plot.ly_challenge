@@ -1,6 +1,7 @@
 # Plot.ly Challenge - Belly Button Biodiversity
 ## [Deployed Github Page here](https://rh-cmd.github.io/plotly_challenge/)
 
+
 ![Bacteria by filterforge.com](Images/bacteria.jpg)
 
 Build an interactive dashboard to explore the [Belly Button Biodiversity dataset](http://robdunnlab.com/projects/belly-button-biodiversity/), which catalogs the microbes that colonize human navels.
