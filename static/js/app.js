@@ -15,10 +15,7 @@ var gaugeChart = d3.select("#gauge");
 
 
 function plotCharts(id) {
-
-    d3.json("data/samples.json").then((data => {
-
-        // filter
+    d3.json("samples.json").then((data => {
         var eachMetadatapoint = data.metadata.filter(participant => participant.id == id)[0];
 
         // for the gauge chart below
@@ -265,7 +262,7 @@ function init() {
 
     // reset any previous data
     resetData();
-    d3.json("data/samples.json").then((data => {
+    d3.json("samples.json").then((data => {
 
         // Create the dropdown menu
 
