@@ -100,4 +100,20 @@ function init() {
         .property("value", sample);
     });
   
-    
+    // Build the intial plot
+    const firstSample = sampleNames[0];
+    buildCharts(firstSample);
+    buildMetadata(firstSample);
+  });
+  }
+  
+  function optionChanged(newSample) {
+  // Switch the data when we select a new sample
+  buildCharts(newSample);
+  buildMetadata(newSample);
+  }
+  
+  
+  
+  // Initialize the dashboard
+  init();
