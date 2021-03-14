@@ -1,28 +1,51 @@
-// Variable for the metadata field
-var demographicsTable = d3.select("#sample-metadata");
-
-// Variable for user input 
+// // Setup all variables
+// Variable for the metadata panel
 var idSelect = d3.select("#selDataset");
-
-// Create a function to build our bar and bubble charts
-
+// Variable for user input 
+var demographicsTable = d3.select("#sample-metadata");
 // Variable for the bar chart div
 var barChart = d3.select("#bar");
 // Variable for the bubble chart div
 var bubbleChart = d3.select("#bubble");
-// Varible the gauge chart div
+// Variable for the gauge chart div
 var gaugeChart = d3.select("#gauge");
 
+// Create a function to populate the drop down menu
+function init() {
+    resetData();
+    d3.json("data/samples.json").then((data => {
+        data.names.forEach((name => {
+            var option = idSelect.append("option");
+            option.text(name);
+        }));
+        var initId = idSelect.property("value")
 
+        // plot charts with initial ID
+        plotCharts(initId);
+
+    }));
+
+}
+
+// Reset the data 
+function resetData() {
+    demographicsTable.html("");
+    barChart.html("");
+    bubbleChart.html("");
+    gaugeChart.html("");
+
+};
+
+// Function to build the bar and bubble charts
 function plotCharts(id) {
-    d3.json("samples.json").then((data => {
-        var eachMetadatapoint = data.metadata.filter(participant => participant.id == id)[0];
+    d3.json("data/samples.json").then((data => {
+        var individualMetadata = data.metadata.filter(participant => participant.id == id)[0];
 
-        // for the gauge chart below
-        var wfreq = eachMetadatapoint.wfreq;
+        // get the wash frequency for the gauge chart 
+        var wfreq = individualMetadata.wfreq;
 
-        // For each loop to loop through all the datapoints
-        Object.entries(eachMetadatapoint).forEach(([key, value]) => {
+        // Iterate through each key and value in the metadata
+        Object.entries(individualMetadata).forEach(([key, value]) => {
             var newList = demographicsTable.append("ul");
             newList.attr("class", "list-group list-group-flush");
             var listItem = newList.append("li");
@@ -31,15 +54,15 @@ function plotCharts(id) {
 
         });
 
-        // filter for the ID chosen
+        // filter the samples for the ID chosen
         var individualSample = data.samples.filter(sample => sample.id == id)[0];
 
-        // create empty arrays to store data during the for each loop
+        // create empty arrays to store sample data
         var otuIds = [];
         var otuLabels = [];
         var sampleValues = [];
 
-        // Iterate through each key and value in the sample to retrieve data for plotting
+        // Iterate through the sample data for plotting
         Object.entries(individualSample).forEach(([key, value]) => {
 
             switch (key) {
@@ -58,13 +81,12 @@ function plotCharts(id) {
 
         });
 
-        // Top 10 values, labels and IDs
         var topOtuIds = otuIds[0].slice(0, 10).reverse();
         var topOtuLabels = otuLabels[0].slice(0, 10).reverse();
         var topSampleValues = sampleValues[0].slice(0, 10).reverse();
         var topOtuIdsFormatted = topOtuIds.map(otuID => "OTU " + otuID);
 
-        // Create the bar chart
+        // Bar chart
         var traceBar = {
             x: topSampleValues,
             y: topOtuIdsFormatted,
@@ -75,7 +97,6 @@ function plotCharts(id) {
                 color: 'rgb(29,145,192)'
             }
         };
-
         var dataBar = [traceBar];
 
         var layoutBar = {
@@ -107,8 +128,8 @@ function plotCharts(id) {
 
         Plotly.newPlot("bar", dataBar, layoutBar);
 
-        // Create bubble chart
-        var traceBubble = {
+        // Bubble chart
+        var traceBub = {
             x: otuIds[0],
             y: sampleValues[0],
             text: otuLabels[0],
@@ -120,9 +141,9 @@ function plotCharts(id) {
             }
         };
 
-        var dataBubble = [traceBubble];
+        var dataBub = [traceBub];
 
-        var layoutBubble = {
+        var layoutBub = {
             font: {
                 family: 'Quicksand'
             },
@@ -142,14 +163,14 @@ function plotCharts(id) {
             showlegend: false,
         };
 
-        Plotly.newPlot('bubble', dataBubble, layoutBubble);
+        Plotly.newPlot('bubble', dataBub, layoutBub);
 
-        // Create the gauge chart
-        // if wfreq has a null value, set it to zero for the pointer 
+        // Gauge chart
+        // if wfreq has a null value, make it zero for calculating pointer later
         if (wfreq == null) {
             wfreq = 0;
         }
-        
+
         var traceGauge = {
             domain: { x: [0, 1], y: [0, 1] },
             value: wfreq,
@@ -178,7 +199,6 @@ function plotCharts(id) {
             }
         };
 
-        // angle for each wfreq segment 
         var angle = (wfreq / 9) * 180;
         var degrees = 180 - angle,
             radius = .8;
@@ -239,7 +259,7 @@ function plotCharts(id) {
                 showticklabels: false,
                 showgrid: false,
                 range: [-1, 1],
-                fixedrange: true 
+                fixedrange: true
             },
             yaxis: {
                 zeroline: false,
@@ -257,43 +277,11 @@ function plotCharts(id) {
 
 };
 
-// Create the function for the form panel
-function init() {
-
-    // reset any previous data
-    resetData();
-    d3.json("samples.json").then((data => {
-
-        // Create the dropdown menu
-
-        // Populate drop down menu with the IDs
-        data.names.forEach((name => {
-            var option = idSelect.append("option");
-            option.text(name);
-        }));
-
-        // Use the first ID to initialize the plot
-        var initId = idSelect.property("value")
-
-        plotCharts(initId);
-
-    }));
-
-}
-
-// Reset the data for the new sample choice
-function resetData() {
-    demographicsTable.html("");
-    barChart.html("");
-    bubbleChart.html("");
-    gaugeChart.html("");
-};
-  
-// Switch the data when we select a new sample
+// Event change
 function optionChanged(id) {
     resetData();
     plotCharts(id);
 }
 
-// Initialize the dashboard
+// Init() function for default data
 init();
