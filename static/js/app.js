@@ -4,18 +4,16 @@ var demographicsTable = d3.select("#sample-metadata");
 // Variable for user input 
 var idSelect = d3.select("#selDataset");
 
-
+// Create a function to build our bar and bubble charts
 
 // Variable for the bar chart div
 var barChart = d3.select("#bar");
-
 // Variable for the bubble chart div
 var bubbleChart = d3.select("#bubble");
-
 // Varible the gauge chart div
 var gaugeChart = d3.select("#gauge");
 
-// Create a function to build our bar and bubble charts
+
 function plotCharts(id) {
 
     d3.json("data/samples.json").then((data => {
@@ -150,7 +148,7 @@ function plotCharts(id) {
         Plotly.newPlot('bubble', dataBubble, layoutBubble);
 
         // Create the gauge chart
-        // if wfreq has a null value, make it zero for calculating pointer later
+        // if wfreq has a null value, set it to zero for the pointer 
         if (wfreq == null) {
             wfreq = 0;
         }
